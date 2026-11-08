@@ -1,0 +1,65 @@
+# WishVault – komplette Konfiguration über Umgebungsvariablen.
+# Kopieren nach docker-compose.yml, Werte eintragen, dann: docker compose up -d
+services:
+  wishvault:
+    # build: .                 # lokal selbst bauen statt Registry-Image
+    image: ghcr.io/nightmeer/wishvault:latest
+    container_name: wishvault
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      # ---------- Allgemein ----------
+      SITE_NAME: WishVault
+      SITE_TAGLINE: "Spielwünsche für den GameVault-Server"
+      # Favicon/Logo: leer = eingebautes WishVault-Icon, sonst URL (z. B. https://…/icon.png)
+      SITE_FAVICON: ""
+      SITE_LOGO: ""
+      # Öffentliche Adresse (für Links in E-Mails)
+      BASE_URL: ""
+      TZ: Europe/Berlin
+      # Zeitplan der Hintergrundjobs (Sync, Steam-Checks, Mails)
+      CRON_SCHEDULE: "*/15 * * * *"
+
+      # ---------- Superadmin ----------
+      ADMIN_USER: admin
+      ADMIN_PASS: bitte-aendern
+
+      # ---------- GameVault ----------
+      GAMEVAULT_URL: https://gamevault.example.com
+      GAMEVAULT_USERNAME: ""
+      GAMEVAULT_PASSWORD: ""
+      # Wünsche automatisch auf "Verfügbar" setzen, wenn sie in GameVault auftauchen
+      GAMEVAULT_AUTO_AVAILABLE: "true"
+      # Dabei Interessenten per Mail benachrichtigen
+      GAMEVAULT_NOTIFY_ON_AUTO_AVAILABLE: "false"
+      # GameVault-Nutzer für den GSE-Konfigurator übernehmen
+      GAMEVAULT_SYNC_USERS: "true"
+
+      # ---------- Steam ----------
+      STEAM_COUNTRY: DE
+      STEAM_LANGUAGE: german
+      STEAM_TAGS_LANGUAGE: english
+      STEAM_RECHECK_HOURS: "6"
+
+      # ---------- E-Mail (leer = kein Mailversand, E-Mail-Feld wird ausgeblendet) ----------
+      SMTP_HOST: ""
+      SMTP_PORT: "587"
+      SMTP_ENCRYPTION: tls        # tls (STARTTLS), ssl oder leer
+      SMTP_USERNAME: ""
+      SMTP_PASSWORD: ""
+      SMTP_FROM_EMAIL: ""
+      SMTP_FROM_NAME: WishVault
+
+      # ---------- GSE / LAN-Konfigurator ----------
+      GSE_STEAMID_START: "76561198000000001"
+      GSE_LOCAL_SAVE_PATH: savedata
+      GSE_DEFAULT_LANGUAGE: german
+      # schluessel:Anzeigename:Land, …
+      GSE_LANGUAGES: "german:Deutsch:DE,english:Englisch:US,french:Französisch:FR,italian:Italienisch:IT,polish:Polnisch:PL,russian:Russisch:RU,spanish:Spanisch:ES"
+    volumes:
+      # Datenbank, Bilder-Cache, Logs (Docker-Volume, kein Host-Ordner nötig)
+      - wishvault-data:/var/www/data
+
+volumes:
+  wishvault-data:

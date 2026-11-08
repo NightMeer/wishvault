@@ -1,0 +1,5 @@
+# Nur app/, public/ und docker/ gehören ins Image – keine Zugangsdaten oder Laufzeitdaten
+*
+!app/
+!public/
+!docker/

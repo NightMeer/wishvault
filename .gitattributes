@@ -1,0 +1,4 @@
+# Immer LF – Shell-Skripte im Container brechen sonst mit CRLF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.svg text eol=lf
